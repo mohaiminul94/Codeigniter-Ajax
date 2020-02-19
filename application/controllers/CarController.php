@@ -26,10 +26,15 @@ class CarController extends CI_controller {
 		echo "data store";
 	}
 
-	function deleteCar(){
-		$data=$this->EmpModel->deleteEmp();
+	function updateCar(){
+		$data=$this->CarModel->updateCar();
 		echo json_encode($data);
 	}
+
+	// function deleteCar(){
+	// 	$data=$this->EmpModel->deleteEmp();
+	// 	echo json_encode($data);
+	// }
 
 }
 

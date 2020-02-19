@@ -188,7 +188,7 @@ function listEmployee(){
 
 
 $("body").on("click","#openEditCarModal", function(data){
-	
+
 	var car_id = $(this).attr( "data-id" );
 	var	car_name = $(this).attr( "data-name" );
 	var	car_price = $(this).attr( "data-price" );
@@ -204,6 +204,35 @@ $("body").on("click","#openEditCarModal", function(data){
 	$('#editCarModal').modal('show');
 
 });
+
+
+$("body").on("submit","#editCarModal", function(e) {
+		e.preventDefault();	
+		var update_id = $('#edit_id').val();
+		var	update_name = $("#edit_name").val();
+		var	update_price = $("#edit_price").val();
+		var update_transmission = $("#edit_transmission").val();
+		var update_color = $("#edit_color").val();
+		$.ajax({
+		type: 'post',
+		url: '<?php echo base_url('/CarController/updateCar'); ?>',
+		dataType: 'json',
+		data: {id:update_id, name:update_name, price:update_price, transmission:update_transmission, color:update_color},
+		success: function(response) {
+			console.log(response);
+			$('#editCarModal').modal('hide');
+			listEmployee();
+			Swal.fire({
+			  position: 'center',
+			  icon: 'success',
+			  title: 'Your Car Has Been Updated',
+			  showConfirmButton: false,
+			  timer: 1500
+			});
+		}
+	})
+		return false;
+	});
 
 
 </script>
