@@ -14,16 +14,8 @@ class CarController extends CI_controller {
 	}
 
 	function storeCar() {
-		$notification=  $this->CarModel->storeCar();
-		
-		if($notification)
-		{
-			$this->session->set_flashdata('success', "SUCCESS_MESSAGE_HERE"); 
-		}else{
-			$this->session->set_flashdata('error', "ERROR_MESSAGE_HERE");
-		}
-		// return redirect("CarController/index");
-		echo "data store";
+		$data=  $this->CarModel->storeCar();
+		echo json_encode($data);
 	}
 
 	function updateCar(){
@@ -31,10 +23,10 @@ class CarController extends CI_controller {
 		echo json_encode($data);
 	}
 
-	// function deleteCar(){
-	// 	$data=$this->EmpModel->deleteEmp();
-	// 	echo json_encode($data);
-	// }
+	function deleteCar(){
+		$data=$this->CarModel->deleteCar();
+		echo json_encode($data);
+	}
 
 }
 

@@ -57,20 +57,20 @@
       <div class="modal-body">
 	  <form action="" method="post" id="saveCarInfo">
 			<div class="form-group">
-				<input type="text" name="name" id="name" class="form-control"  aria-describedby="emailHelp" placeholder="Enter Name">
+				<input type="text" required name="name" id="name" class="form-control"  aria-describedby="emailHelp" placeholder="Enter Name">
 			</div>
 			<div class="form-group">
-				<input type="price" name="price" id="price" class="form-control"  aria-describedby="emailHelp" placeholder="Enter Price">
+				<input type="price" required name="price" id="price" class="form-control"  aria-describedby="emailHelp" placeholder="Enter Price">
 			</div>
 			<div class="form-group">
-				<select name="transmission" id="transmission" class="form-control">
+				<select name="transmission" required id="transmission" class="form-control">
 					<option>Transmission Type</option>
 					<option value="Automatic">Automatic</option>
 					<option value="Manual">Manual</option>
 				</select>		
 			</div>
 			<div class="form-group">
-				<input type="text" name="color" id="color" class="form-control"  aria-describedby="emailHelp" placeholder="Enter Color">
+				<input type="text" required name="color" id="color" class="form-control"  aria-describedby="emailHelp" placeholder="Enter Color">
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -97,20 +97,20 @@
       <div class="modal-body">
 	  <form action="" method="post" id="saveCarInfo">
 			<div class="form-group">
-				<input type="text" name="edit_name" id="edit_name" class="form-control"  aria-describedby="emailHelp" placeholder="Enter Name">
+				<input type="text" required name="edit_name" id="edit_name" class="form-control"  aria-describedby="emailHelp" placeholder="Enter Name">
 			</div>
 			<div class="form-group">
-				<input type="price" name="edit_price" id="edit_price" class="form-control"  aria-describedby="emailHelp" placeholder="Enter Price">
+				<input type="price" required name="edit_price" id="edit_price" class="form-control"  aria-describedby="emailHelp" placeholder="Enter Price">
 			</div>
 			<div class="form-group">
-				<select name="transmission" name="edit_transmission" id="edit_transmission" class="form-control">
+				<select name="transmission" required name="edit_transmission" id="edit_transmission" class="form-control">
 					<option>Transmission Type</option>
 					<option value="Automatic">Automatic</option>
 					<option value="Manual">Manual</option>
 				</select>		
 			</div>
 			<div class="form-group">
-				<input type="text" name="edit_color" id="edit_color" class="form-control"  aria-describedby="emailHelp" placeholder="Enter Color">
+				<input type="text" required name="edit_color" id="edit_color" class="form-control"  aria-describedby="emailHelp" placeholder="Enter Color">
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -122,6 +122,7 @@
     </div>
   </div>
 </div>
+
 
 
 
@@ -142,6 +143,11 @@ $("body").on("submit","#saveCarInfo", function(e) {
 			console.log(response);
 			$('#CarModal').modal('hide');
 			listEmployee();
+			$("#id").val("");
+			$("#name").val("");
+			$("#price").val("");
+			$("#transmission").val("Transmission Type");
+			$("#color").val("");
 			Swal.fire({
 			  position: 'center',
 			  icon: 'success',
@@ -165,10 +171,12 @@ function listEmployee(){
 		success : function(data){
 			var html = '';
 			var i;
+			var count=1;
 			for(i=0; i<data.length; i++){
 
 				html += '<tr>'+
-						'<th scope="row">'+data[i].id+'</th>'+
+						// '<th scope="row">'+data[i].id+'</th>'+
+						'<th scope="row">'+ count +'</th>'+
 						'<td id="get_name">'+data[i].name+'</td>'+
 						'<td>'+data[i].price+'</td>'+
 						'<td>'+data[i].transmission+'</td>'+
@@ -177,9 +185,10 @@ function listEmployee(){
 						'<td>'+data[i].updated_at+'</td>'+
 						'<td align="center">'
 							+'<a href="javascript:void(0);" class="btn btn-primary" style="margin:0 10px;" id="openEditCarModal" data-id="'+data[i].id+'" data-name="'+data[i].name+'" data-price="'+data[i].price+'" data-transmission="'+data[i].transmission+'" data-color="'+data[i].color+'">Edit</a>'
-							+'<button class="btn btn-danger">Delete</button>'+
+							+'<a href="javascript:void(0);" data-id="'+data[i].id+'" data-name="'+data[i].name+'" id="deleteCarInfo" class="btn btn-danger">Delete</a>'+
 							'</td>'+
 						'</tr>';
+			count++;
 			}
 			$('#allCars').html(html);					
 		}
@@ -232,6 +241,40 @@ $("body").on("submit","#editCarModal", function(e) {
 		}
 	})
 		return false;
+	});
+
+	
+	$("body").on("click","#deleteCarInfo", function(e) {
+		e.preventDefault();	
+		var car_id = $(this).attr( "data-id" );
+		var car_name = $(this).attr( "data-name" );
+		Swal.fire({
+		  title: 'Are you sure?',
+		  text: car_name,
+		  icon: 'warning',
+		  showCancelButton: true,
+		  confirmButtonColor: '#3085d6',
+		  cancelButtonColor: '#d33',
+		  confirmButtonText: 'Yes, delete it!'
+		}).then((result) => {
+		  if (result.value) {
+		  	$.ajax({
+				type : "POST",
+				url: '<?php echo base_url('/CarController/deleteCar'); ?>',
+				dataType : "JSON",  
+				data : {id:car_id},
+				success: function(data){
+					Swal.fire(
+				      'Deleted!',
+				      'Your file has been deleted.',
+				      'success'
+				    )
+					listEmployee();
+				}
+			});
+			return false;
+		  }
+		})
 	});
 
 
